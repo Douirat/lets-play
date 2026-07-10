@@ -1,0 +1,25 @@
+services:
+  mongodb:
+    image: mongo:8
+    container_name: mongodb
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  app:
+    build: .
+    container_name: lets-play
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+
+volumes:
+  mongodb_data:
