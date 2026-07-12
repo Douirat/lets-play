@@ -1,4 +1,4 @@
-package com.lets_zone01.lets_play;
+package com.zone01.lets_play;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
