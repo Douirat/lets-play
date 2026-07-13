@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zone01.lets_play.DTOs.response.ResponseDTO;
 import com.zone01.lets_play.DTOs.user.UserResponse;
+import com.zone01.lets_play.DTOs.user.AuthenticatedResponse;
 import com.zone01.lets_play.DTOs.user.UserLoginRequest;
 import com.zone01.lets_play.services.user.UserService;
 import com.zone01.lets_play.models.user.User;
@@ -32,7 +33,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDTO<UserResponse>> loginUser(@Valid @ModelAttribute UserLoginRequest loginRequest) {
+    public ResponseEntity<ResponseDTO<AuthenticatedResponse>> loginUser(@Valid @ModelAttribute UserLoginRequest loginRequest) {
         // Implementation for user login
         return ResponseEntity.ok().body(userService.loginUser(loginRequest));
     }
