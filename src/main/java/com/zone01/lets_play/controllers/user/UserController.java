@@ -8,8 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zone01.lets_play.DTOs.response.ResponseDTO;
+import com.zone01.lets_play.DTOs.user.UserDTO;
+import com.zone01.lets_play.DTOs.user.UserLoginRequest;
 import com.zone01.lets_play.services.user.UserService;
 import com.zone01.lets_play.models.user.User;
+
+
 import jakarta.validation.Valid;
 
 import lombok.AllArgsConstructor;
@@ -22,8 +26,16 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<ResponseDTO<User>> createUser(@Valid @ModelAttribute User user) {
+    public ResponseEntity<ResponseDTO<UserDTO>> createUser(@Valid @ModelAttribute User user) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userService.createUser(user));
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<ResponseDTO<UserDTO>> loginUser(@Valid @ModelAttribute UserLoginRequest loginRequest) {
+        // Implementation for user login
+        return ResponseEntity.ok().body(userService.loginUser(loginRequest));
+    }
+
+    
 }
