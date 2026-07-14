@@ -40,7 +40,7 @@ public class User {
     @Field("password")
     private String password;
 
-    // @NotNull(message = "Role -----> is required")
+    @NotNull(message = "Role -----> is required")
     @Field("role")
     private Role role;
 

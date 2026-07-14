@@ -37,7 +37,14 @@ public class UserServiceImpl implements UserService {
             user.setRole(Role.USER);
         }
 
+        System.out.println("User role: " + user.getRole());
+
+        if( user.getName() == null || user.getName().isEmpty() || user.getPassword() == null || user.getPassword().isEmpty() || user.getEmail() == null || user.getEmail().isEmpty()) {
+            return ResponseDTO.error("All fields are required.");
+        }
+
         User savedUser = userRepository.save(user);
+
         return ResponseDTO.success(
                 "User created successfully.",
                 new UserResponse(
