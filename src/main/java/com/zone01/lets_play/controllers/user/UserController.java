@@ -21,12 +21,12 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/users")
+@RequestMapping("/api/auth/")
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<ResponseDTO<UserResponse>> createUser(@Valid @ModelAttribute User user) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userService.createUser(user));

@@ -75,9 +75,9 @@ echo
 # ---------------------------------------------------------------------------
 # 1. Register
 # ---------------------------------------------------------------------------
-info "POST /api/users"
+info "POST /api/auth/register"
 
-REGISTER_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "${BASE_URL}/api/users" \
+REGISTER_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "${BASE_URL}/api/auth/register" \
   --data-urlencode "name=${NAME}" \
   --data-urlencode "email=${EMAIL}" \
   --data-urlencode "password=${PASSWORD}")
@@ -106,9 +106,9 @@ echo
 # ---------------------------------------------------------------------------
 # 2. Register duplicate email -> expect 409
 # ---------------------------------------------------------------------------
-info "POST /api/users (duplicate email, expect 409)"
+info "POST /api/auth/register (duplicate email, expect 409)"
 
-DUP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE_URL}/api/users" \
+DUP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE_URL}/api/auth/register" \
   --data-urlencode "name=${NAME}" \
   --data-urlencode "email=${EMAIL}" \
   --data-urlencode "password=${PASSWORD}")
@@ -125,9 +125,9 @@ echo
 # ---------------------------------------------------------------------------
 # 3. Login with correct credentials
 # ---------------------------------------------------------------------------
-info "POST /api/users/login (correct credentials)"
+info "POST /api/auth/login (correct credentials)"
 
-LOGIN_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "${BASE_URL}/api/users/login" \
+LOGIN_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "${BASE_URL}/api/auth/login" \
   --data-urlencode "email=${EMAIL}" \
   --data-urlencode "password=${PASSWORD}")
 
@@ -167,9 +167,9 @@ echo
 # ---------------------------------------------------------------------------
 # 4. Login with wrong password -> expect 401
 # ---------------------------------------------------------------------------
-info "POST /api/users/login (wrong password, expect 401)"
+info "POST /api/auth/login (wrong password, expect 401)"
 
-BAD_LOGIN_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE_URL}/api/users/login" \
+BAD_LOGIN_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE_URL}/api/auth/login" \
   --data-urlencode "email=${EMAIL}" \
   --data-urlencode "password=wrong-password")
 
@@ -185,9 +185,9 @@ echo
 # ---------------------------------------------------------------------------
 # 5. Login with nonexistent email -> expect 401
 # ---------------------------------------------------------------------------
-info "POST /api/users/login (nonexistent email, expect 401)"
+info "POST /api/auth/login (nonexistent email, expect 401)"
 
-NOEMAIL_LOGIN_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE_URL}/api/users/login" \
+NOEMAIL_LOGIN_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE_URL}/api/auth/login" \
   --data-urlencode "email=nobody-$(date +%s)@example.com" \
   --data-urlencode "password=whatever")
 

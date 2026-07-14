@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
+import com.zone01.lets_play.models.role.Role;
+
 
 import com.zone01.lets_play.models.user.User;
 
@@ -18,13 +20,21 @@ import com.zone01.lets_play.models.user.User;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-   private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
     @Override
     public ResponseDTO<UserResponse> createUser(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
             return ResponseDTO.error("User with this email already exists.");
+        }
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        if (userRepository.count() == 0) {
+            user.setRole(Role.ADMIN);
+        } else {
+            user.setRole(Role.USER);
         }
 
         User savedUser = userRepository.save(user);

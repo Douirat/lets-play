@@ -1,28 +1,16 @@
-# spring:
-#   application:
-#     name: lets-play
-
-#   data:
-#     mongodb:
-#       host: ${MONGODB_HOST}
-#       port: ${MONGODB_PORT}
-#       database: ${MONGODB_DATABASE}
-#       username: ${MONGODB_USERNAME}
-#       password: ${MONGODB_PASSWORD}
-
-# jwt:
-#   secret: ${JWT_SECRET}
-#   expiration-ms: ${JWT_EXPIRATION_MS}
-
 spring:
+  application:
+    name: lets-play
+
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: lets-play-db
-      username: root
-      password: secret
+      host: ${MONGODB_HOST}
+      port: ${MONGODB_PORT}
+      database: ${MONGODB_DATABASE}
+      username: ${MONGODB_USERNAME}
+      password: ${MONGODB_PASSWORD}
+      authentication-database: admin
 
 jwt:
-  secret: 8f4c7d9a1b2e3f4567890abcdef1234567890abcdef1234567890abcdef1234
-  expiration-ms: 86400000
+  secret: ${JWT_SECRET}
+  expiration-ms: ${JWT_EXPIRATION_MS}
