@@ -15,15 +15,10 @@ import lombok.AllArgsConstructor;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    
-
-
 
     @Override
-    public UserDetails loadUserByUsername(String identifier)
-            throws UsernameNotFoundException {
-
-        User user = userRepository.findByNameOrEmail(identifier)
+    public UserDetails loadUserByUsername(String userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return new CustomUserDetails(user);
