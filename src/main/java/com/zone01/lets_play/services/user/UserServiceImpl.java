@@ -25,11 +25,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseDTO<UserResponse> createUser(User user) {
+
+        if( user.getName() == null || user.getName().isEmpty() || user.getPassword() == null || user.getPassword().isEmpty() || user.getEmail() == null || user.getEmail().isEmpty()) {
+            return ResponseDTO.error("All fields are required.");
+        }
+
         if (userRepository.existsByEmail(user.getEmail())) {
             return ResponseDTO.error("User with this email already exists.");
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if(userRepository.existsByName(user.getName())) {
+
+        }
 
         if (userRepository.count() == 0) {
             user.setRole(Role.ADMIN);
@@ -37,11 +44,11 @@ public class UserServiceImpl implements UserService {
             user.setRole(Role.USER);
         }
 
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+
         System.out.println("User role: " + user.getRole());
 
-        if( user.getName() == null || user.getName().isEmpty() || user.getPassword() == null || user.getPassword().isEmpty() || user.getEmail() == null || user.getEmail().isEmpty()) {
-            return ResponseDTO.error("All fields are required.");
-        }
 
         User savedUser = userRepository.save(user);
 
@@ -52,7 +59,6 @@ public class UserServiceImpl implements UserService {
                         savedUser.getName(),
                         savedUser.getEmail(),
                         savedUser.getRole().name()));
-
     }
 
     @Override
