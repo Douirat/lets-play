@@ -1,4 +1,4 @@
-package com.zone01.lets_play.exceptions;
+package com.zone01.lets_play.services.exception;
 
 import com.zone01.lets_play.DTOs.response.ResponseDTO;
 import org.springframework.http.HttpStatus;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
+import com.zone01.lets_play.exceptions.*;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
