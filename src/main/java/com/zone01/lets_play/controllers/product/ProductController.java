@@ -1,5 +1,7 @@
 package com.zone01.lets_play.controllers.product;
 
+import com.zone01.lets_play.DTOs.product.ProductCreateRequest;
+import com.zone01.lets_play.DTOs.product.ProductUpdateRequest;
 import com.zone01.lets_play.DTOs.response.ResponseDTO;
 import com.zone01.lets_play.models.product.Product;
 import com.zone01.lets_play.services.product.ProductService;
@@ -22,16 +24,15 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO<Product>> createProduct(@Valid @ModelAttribute Product product) {
-        return ResponseEntity.status(201).body(productService.createProduct(product));
+    public ResponseEntity<ResponseDTO<Product>> createProduct(@Valid @ModelAttribute ProductCreateRequest request) {
+        return ResponseEntity.status(201).body(productService.createProduct(request));
     }
 
     @PreAuthorize("@productSecurity.isOwnerOrAdmin(#id, authentication)")
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDTO<Product>> updateProduct(
             @PathVariable String id,
-            @Valid @ModelAttribute Product update
-    ) {
+            @Valid @ModelAttribute ProductUpdateRequest update) {
         return ResponseEntity.ok(productService.updateProduct(id, update));
     }
 
@@ -39,5 +40,11 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDTO<Void>> deleteProduct(@PathVariable String id) {
         return ResponseEntity.ok(productService.deleteProduct(id));
+    }
+
+    // ProductController.java
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDTO<Product>> getProductById(@PathVariable String id) {
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 }

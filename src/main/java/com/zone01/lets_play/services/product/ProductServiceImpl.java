@@ -1,13 +1,14 @@
 package com.zone01.lets_play.services.product;
 
+import com.zone01.lets_play.DTOs.product.ProductCreateRequest;
+import com.zone01.lets_play.DTOs.product.ProductUpdateRequest;
 import com.zone01.lets_play.DTOs.response.ResponseDTO;
+import com.zone01.lets_play.exceptions.ResourceNotFoundException;
 import com.zone01.lets_play.models.product.Product;
 import com.zone01.lets_play.repositories.product.ProductRepository;
 import com.zone01.lets_play.security.SecurityUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,33 +24,44 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseDTO<Product> createProduct(Product product) {
-        String currentUserId = SecurityUtils.currentUserId();
-        product.setUserId(currentUserId); // never trust a client-supplied userId
-        Product saved = productRepository.save(product);
-        return ResponseDTO.success("Product created", saved);
+    public ResponseDTO<Product> createProduct(ProductCreateRequest request) {
+        Product product = Product.builder()
+                .name(request.name())
+                .description(request.description())
+                .price(request.price())
+                .userId(SecurityUtils.currentUserId())
+                .build();
+
+        return ResponseDTO.success("Product created", productRepository.save(product));
     }
 
     @Override
-    public ResponseDTO<Product> updateProduct(String id, Product update) {
+    public ResponseDTO<Product> updateProduct(String id, ProductUpdateRequest update) {
         Product existing = productRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+                .orElseThrow(() -> ResourceNotFoundException.product(id));
 
-        existing.setName(update.getName());
-        existing.setDescription(update.getDescription());
-        existing.setPrice(update.getPrice());
-        // userId is intentionally never overwritten here — ownership doesn't transfer on update
+        existing.setName(update.name());
+        existing.setDescription(update.description());
+        existing.setPrice(update.price());
+        // userId intentionally untouched — ownership doesn't transfer on update
 
-        Product saved = productRepository.save(existing);
-        return ResponseDTO.success("Product updated", saved);
+        return ResponseDTO.success("Product updated", productRepository.save(existing));
     }
 
     @Override
     public ResponseDTO<Void> deleteProduct(String id) {
         if (!productRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+            throw ResourceNotFoundException.product(id);
         }
         productRepository.deleteById(id);
         return ResponseDTO.success("Product deleted", null);
+    }
+
+    // ProductServiceImpl.java — add
+    @Override
+    public ResponseDTO<Product> getProductById(String id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> ResourceNotFoundException.product(id));
+        return ResponseDTO.success("Product retrieved", product);
     }
 }
