@@ -5,8 +5,10 @@ import com.zone01.lets_play.DTOs.user.AuthenticatedResponse;
 import com.zone01.lets_play.DTOs.user.UserLoginRequest;
 import com.zone01.lets_play.DTOs.user.UserRegisterRequest;
 import com.zone01.lets_play.DTOs.user.UserResponse;
+import com.zone01.lets_play.DTOs.user.UserUpdateRequest;
 import com.zone01.lets_play.exceptions.DuplicateResourceException;
 import com.zone01.lets_play.exceptions.InvalidCredentialsException;
+import com.zone01.lets_play.exceptions.ResourceNotFoundException;
 import com.zone01.lets_play.models.role.Role;
 import com.zone01.lets_play.models.user.User;
 import com.zone01.lets_play.repositories.user.UserRepository;
@@ -40,7 +42,8 @@ public class UserServiceImpl implements UserService {
 
         return ResponseDTO.success(
                 "User created successfully.",
-                new UserResponse(savedUser.getId(), savedUser.getName(), savedUser.getEmail(), savedUser.getRole().name()));
+                new UserResponse(savedUser.getId(), savedUser.getName(), savedUser.getEmail(),
+                        savedUser.getRole().name()));
     }
 
     @Override
@@ -53,8 +56,25 @@ public class UserServiceImpl implements UserService {
         }
 
         String token = jwtUtil.generateToken(user.getId(), user.getRole().name());
-        UserResponse userResponse = new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getRole().name());
+        UserResponse userResponse = new UserResponse(user.getId(), user.getName(), user.getEmail(),
+                user.getRole().name());
 
         return ResponseDTO.success("Login successful.", new AuthenticatedResponse(token, "Bearer", userResponse));
+    }
+
+    // UserServiceImpl.java — add
+    @Override
+    public ResponseDTO<UserResponse> updateUser(String id, UserUpdateRequest request) {
+        User existing = userRepository.findById(id)
+                .orElseThrow(() -> ResourceNotFoundException.user(id));
+
+        existing.setName(request.name());
+        existing.setEmail(request.email());
+        // password and role intentionally untouched here — this is a profile
+        // edit endpoint, not a password-reset or role-grant endpoint
+
+        User saved = userRepository.save(existing);
+        return ResponseDTO.success("User updated",
+                new UserResponse(saved.getId(), saved.getName(), saved.getEmail(), saved.getRole().name()));
     }
 }
