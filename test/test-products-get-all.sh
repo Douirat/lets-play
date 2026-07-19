@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# test-products-read.sh — GET /api/products
+# test-products-get-all.sh — GET /api/products
 #
 # Usage:
-#   ./test-products-read.sh
-#   BASE_URL=http://localhost:8080 ./test-products-read.sh
+#   ./test-products-get-all.sh
+#   BASE_URL=http://localhost:8080 ./test-products-get-all.sh
 #
 # Run test-login.sh first if you want the "valid token" case included —
 # it's skipped gracefully otherwise.
