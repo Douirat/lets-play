@@ -1,5 +1,6 @@
 package com.zone01.lets_play.security;
 
+import com.zone01.lets_play.exceptions.ResourceNotFoundException;
 import com.zone01.lets_play.models.role.*;
 import com.zone01.lets_play.repositories.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +18,13 @@ public class ProductSecurity {
             return false;
         }
 
+        var product = productRepository.findById(productId)
+                .orElseThrow(() -> ResourceNotFoundException.product(productId));
+
         if (principal.getUser().getRole() == Role.ADMIN) {
             return true;
         }
 
-        return productRepository.findById(productId)
-                .map(product -> product.getUserId().equals(principal.getId()))
-                .orElse(false); // no product -> not authorized; controller still 404s cleanly afterward
+        return product.getUserId().equals(principal.getId());
     }
 }
